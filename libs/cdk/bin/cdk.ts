@@ -18,12 +18,17 @@ new ConfigStack(app, `ARSampleConfig-${environment}`, {
   env: { account: process.env.APP_ACCOUNT_ID, region: process.env.APP_REGION },
 });
 
-const commonResourcesStack = new CommonResourcesStack(app, `ARSampleCommonResourcesStack-${environment}`, {
-  environment,
-  env: { account: process.env.APP_ACCOUNT_ID, region: process.env.APP_REGION },
-});
+const commonResourcesStack = new CommonResourcesStack(
+  app,
+  `ARSampleCommonResourcesStack-${environment}`,
+  {
+    environment,
+    env: { account: process.env.APP_ACCOUNT_ID, region: process.env.APP_REGION },
+  },
+);
 
 new ServerDeploymentStack(app, `ARSampleServerDeploymentStack-${environment}`, {
   environment,
-  buckets: [commonResourcesStack.getTasksBucket],
+  bucket: commonResourcesStack.getTasksBucket,
+  distribution: commonResourcesStack.getDistribution,
 });

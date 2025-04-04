@@ -64,14 +64,17 @@ export const updateTask = async (id: string, taskData: UpdateTaskDto): Promise<I
   }
 };
 
-export const deleteTask = async (id: string): Promise<void> => {
+export const deleteTask = async (id: string): Promise<ITaskDoc> => {
   logger.info('taskDao - deleteTask()');
 
   try {
     const task = await Task.findByIdAndDelete(id);
+
     if (!task) {
       throw ThrowError('Task not found');
     }
+
+    return task;
   } catch (error) {
     logger.error(`Error in deleting task: ${id}`, error);
     throw error;

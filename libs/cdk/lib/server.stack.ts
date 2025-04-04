@@ -1,4 +1,5 @@
 import { Stack } from 'aws-cdk-lib';
+import { Config } from '../src/interfaces';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -7,10 +8,11 @@ import { ECRPipeline } from '../resources/codebuild';
 import { SSM } from '../resources/ssm';
 
 import { BaseStackProps } from '../resources/lib';
-import { Config } from '../src/interfaces';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 
 interface ServerDeploymentStackProps extends BaseStackProps {
-  buckets: Bucket[];
+  bucket: Bucket;
+  distribution: Distribution;
 }
 
 export class ServerDeploymentStack extends Stack {
@@ -35,7 +37,8 @@ export class ServerDeploymentStack extends Stack {
       new TasksAppRunner(this, {
         environment,
         ecrRepository: buildProject.getECRRepository,
-        buckets: props.buckets,
+        bucket: props.bucket,
+        distribution: props.distribution,
         serverPort: config.parameters.serverPort,
         appEnvVariables: {
           dbUri,

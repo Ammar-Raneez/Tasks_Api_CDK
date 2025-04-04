@@ -1,3 +1,5 @@
+import { UploadedFile } from 'express-fileupload';
+
 import { ITaskDoc } from '../models';
 
 import { CreateTaskDto, UpdateTaskDto } from '../common/dtos/task';
@@ -5,11 +7,30 @@ import { CreateTaskDto, UpdateTaskDto } from '../common/dtos/task';
 import { logger, ThrowError } from '../utils';
 import { taskDao } from '../daos';
 
-export const createTask = async (taskData: CreateTaskDto): Promise<ITaskDoc> => {
+import { s3Service } from '.';
+
+export const createTask = async (
+  taskData: CreateTaskDto,
+  file?: UploadedFile,
+): Promise<ITaskDoc> => {
   logger.info('taskService - createTask()');
 
   try {
-    return await taskDao.createTask(taskData);
+    let fileUrl = '';
+    let fileKey = '';
+    if (file) {
+      const upload = await s3Service.uploadFileToS3(file);
+      fileUrl = upload.fileUrl;
+      fileKey = upload.fileKey;
+    }
+
+    const createData = { ...taskData };
+    if (fileUrl) {
+      createData.fileKey = fileKey;
+      createData.fileUrl = fileUrl;
+    }
+
+    return await taskDao.createTask(createData);
   } catch (error) {
     throw ThrowError(error);
   }
@@ -35,21 +56,44 @@ export const getTaskById = async (id: string): Promise<ITaskDoc> => {
   }
 };
 
-export const updateTask = async (id: string, taskData: UpdateTaskDto): Promise<ITaskDoc> => {
+export const updateTask = async (
+  id: string,
+  taskData: UpdateTaskDto,
+  file?: UploadedFile,
+): Promise<ITaskDoc> => {
   logger.info('taskService - updateTask()');
 
   try {
-    return await taskDao.updateTask(id, taskData);
+    let fileUrl = '';
+    let fileKey = '';
+    if (file) {
+      const upload = await s3Service.uploadFileToS3(file);
+      fileUrl = upload.fileUrl;
+      fileKey = upload.fileKey;
+    }
+
+    const updateData = { ...taskData };
+    if (fileUrl) {
+      updateData.fileKey = fileKey;
+      updateData.fileUrl = fileUrl;
+    }
+
+    return await taskDao.updateTask(id, updateData);
   } catch (error) {
     throw ThrowError(error);
   }
 };
 
-export const deleteTask = async (id: string): Promise<void> => {
+export const deleteTask = async (id: string): Promise<ITaskDoc> => {
   logger.info('taskService - deleteTask()');
 
   try {
-    return await taskDao.deleteTask(id);
+    const task = await taskDao.deleteTask(id);
+    if (task.fileKey) {
+      await s3Service.deleteFile(task.fileKey);
+    }
+
+    return task;
   } catch (error) {
     throw ThrowError(error);
   }

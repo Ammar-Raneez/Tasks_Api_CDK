@@ -25,6 +25,10 @@ export class TasksDistribution {
     this.provideBucketAccess();
   }
 
+  public get getDistribution() {
+    return this.distribution;
+  }
+
   private createDistribution() {
     this.distribution = new Distribution(
       this.stack,

@@ -103,4 +103,3 @@ Potential areas for enhancement:
 
 1. Implement authentication and authorization
 2. Add pagination for GET endpoints
-3. Add monitoring and logging with CloudWatch

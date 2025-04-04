@@ -1,4 +1,5 @@
 import { Stack } from 'aws-cdk-lib';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
@@ -9,6 +10,7 @@ import { BaseStackProps } from '../resources/lib';
 
 export class CommonResourcesStack extends Stack {
   private tasksBucket: Bucket;
+  private distribution: Distribution;
 
   constructor(scope: Construct, id: string, props?: BaseStackProps) {
     super(scope, id, props);
@@ -22,13 +24,19 @@ export class CommonResourcesStack extends Stack {
 
     this.tasksBucket = pb.getBucket;
 
-    new TasksDistribution(this, {
+    const dist = new TasksDistribution(this, {
       environment,
       bucket: pb.getBucket,
     });
+
+    this.distribution = dist.getDistribution;
   }
 
   public get getTasksBucket() {
     return this.tasksBucket;
+  }
+
+  public get getDistribution() {
+    return this.distribution;
   }
 }

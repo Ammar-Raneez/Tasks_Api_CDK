@@ -1,3 +1,4 @@
+import { UploadedFile } from 'express-fileupload';
 import AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -12,32 +13,25 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-export const generatePresignedUrl = async (
-  contentType: string,
-  fileExtension: string,
-): Promise<IS3UploadUrl> => {
-  logger.info('s3Service - generatePresignedUrl()');
+export const uploadFileToS3 = async (file: UploadedFile): Promise<IS3UploadUrl> => {
+  const fileExtension = file.name.split('.').pop();
+  const fileKey = `${uuidv4()}.${fileExtension}`;
 
-  try {
-    const fileKey = `${uuidv4()}.${fileExtension}`;
-    const params = {
-      Bucket: AWSConfig.BUCKET_NAME,
-      Key: fileKey,
-      ContentType: contentType,
-      Expires: 300,
-    };
+  const params = {
+    Bucket: AWSConfig.BUCKET_NAME!,
+    Key: fileKey,
+    Body: file.data,
+    ContentType: file.mimetype,
+  };
 
-    const uploadUrl = await s3.getSignedUrlPromise('putObject', params);
-    const fileUrl = `https://${AWSConfig.BUCKET_NAME}.s3.${AWSConfig.REGION}.amazonaws.com/${fileKey}`;
+  await s3.putObject(params).promise();
 
-    return {
-      uploadUrl,
-      fileKey,
-      fileUrl,
-    };
-  } catch (error) {
-    throw ThrowError(`Error generating presigned URL: ${(error as Error).message}`);
-  }
+  const fileUrl = `${AWSConfig.CLOUDFRONT_DISTRIBUTION}/${fileKey}`;
+
+  return {
+    fileKey,
+    fileUrl,
+  };
 };
 
 export const deleteFile = async (fileKey: string): Promise<void> => {

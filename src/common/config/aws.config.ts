@@ -15,8 +15,9 @@ const configSchema = {
   properties: {
     REGION: { type: 'string' },
     BUCKET_NAME: { type: 'string' },
+    CLOUDFRONT_DISTRIBUTION: { type: 'string' },
   },
-  required: ['REGION', 'BUCKET_NAME'],
+  required: ['REGION', 'BUCKET_NAME', 'CLOUDFRONT_DISTRIBUTION'],
 };
 
 const validate = ajv.compile(configSchema);
@@ -24,6 +25,7 @@ const validate = ajv.compile(configSchema);
 export const AWSConfig = {
   REGION: process.env.REGION,
   BUCKET_NAME: process.env.BUCKET_NAME,
+  CLOUDFRONT_DISTRIBUTION: process.env.CLOUDFRONT_DISTRIBUTION,
 };
 
 if (!validate(AWSConfig)) {

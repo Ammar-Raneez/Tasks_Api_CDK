@@ -1,4 +1,5 @@
 import { Stack } from 'aws-cdk-lib';
+import { Distribution } from 'aws-cdk-lib/aws-cloudfront';
 import { Repository } from 'aws-cdk-lib/aws-ecr';
 import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
@@ -18,7 +19,8 @@ interface Props extends BaseStackProps {
     dbUri: IStringParameter;
     externalApi: IStringParameter;
   };
-  buckets: Bucket[];
+  bucket: Bucket;
+  distribution: Distribution;
 }
 
 export class TasksAppRunner {
@@ -51,7 +53,8 @@ export class TasksAppRunner {
             APP_ENV: this.props.environment,
             APP_ACCOUNT_ID: this.stack.account,
             REGION: this.stack.region,
-            BUCKET_NAME: this.props.buckets[0].bucketName,
+            BUCKET_NAME: this.props.bucket.bucketName,
+            CLOUDFRONT_DISTRIBUTION: this.props.distribution.domainName,
           },
           environmentSecrets: {
             APP_PORT: Secret.fromSsmParameter(appPort),
@@ -80,9 +83,7 @@ export class TasksAppRunner {
       env?.grantRead(this.role);
     });
 
-    this.props.buckets.forEach((bucket) => {
-      bucket.grantReadWrite(this.role);
-      bucket.grantPut(this.role);
-    });
+    this.props.bucket.grantReadWrite(this.role);
+    this.props.bucket.grantPut(this.role);
   }
 }

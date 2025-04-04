@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import fileUpload from 'express-fileupload';
 
 import { taskController } from '../controllers';
 
@@ -7,11 +8,10 @@ import { ValidateRequest } from '../common/middlewares';
 
 const router = Router();
 
-router.post('/', ValidateRequest(createTaskDtoSchema), taskController.createTask);
+router.post('/', fileUpload(), ValidateRequest(createTaskDtoSchema), taskController.createTask);
 router.get('/', taskController.getAllTasks);
 router.get('/:id', taskController.getTaskById);
-router.put('/:id', ValidateRequest(updateTaskDtoSchema), taskController.updateTask);
+router.put('/:id', fileUpload(), ValidateRequest(updateTaskDtoSchema), taskController.updateTask);
 router.delete('/:id', taskController.deleteTask);
-router.post('/upload-url', taskController.getFileUploadUrl);
 
 export default router;

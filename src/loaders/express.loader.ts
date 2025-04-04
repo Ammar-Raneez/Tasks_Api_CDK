@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import bodyParser from 'body-parser';
+import bodyParser, { urlencoded } from 'body-parser';
 import * as httpContext from 'express-http-context';
 
 import morgan from 'morgan';
@@ -20,6 +20,7 @@ export class ExpressLoader {
   loadMiddleware() {
     this.app.use(bodyParser.json());
     this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(urlencoded({ extended: true }));
     this.app.use(helmet());
     this.app.use(apiRateLimiter);
     this.app.use(httpContext.middleware as any);
