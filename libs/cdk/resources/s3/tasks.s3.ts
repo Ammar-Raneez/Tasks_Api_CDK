@@ -30,14 +30,6 @@ export class TasksBucket {
       bucketName: this.props.name,
       removalPolicy: RemovalPolicy.RETAIN,
       publicReadAccess: false,
-      cors: [
-        {
-          // FE Origin here
-          allowedOrigins: [],
-          allowedMethods: [HttpMethods.GET, HttpMethods.PUT],
-          allowedHeaders: ['*'],
-        },
-      ],
     });
   }
 }

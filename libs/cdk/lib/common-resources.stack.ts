@@ -3,6 +3,7 @@ import { Bucket } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 
 import { TasksBucket } from '../resources/s3';
+import { TasksDistribution } from '../resources/cloudfront';
 
 import { BaseStackProps } from '../resources/lib';
 
@@ -20,6 +21,11 @@ export class CommonResourcesStack extends Stack {
     });
 
     this.tasksBucket = pb.getBucket;
+
+    new TasksDistribution(this, {
+      environment,
+      bucket: pb.getBucket,
+    });
   }
 
   public get getTasksBucket() {

@@ -48,7 +48,10 @@ export class TasksAppRunner {
           port: this.props.serverPort,
           environmentVariables: {
             APP_REGION: this.stack.region,
+            APP_ENV: this.props.environment,
             APP_ACCOUNT_ID: this.stack.account,
+            REGION: this.stack.region,
+            BUCKET_NAME: this.props.buckets[0].bucketName,
           },
           environmentSecrets: {
             APP_PORT: Secret.fromSsmParameter(appPort),
