@@ -2,6 +2,8 @@
 
 A serverless Task Management API built with Express, TypeScript, MongoDB, and AWS services.
 
+Hosted URL: `https://peimtfghmt.ap-northeast-1.awsapprunner.com`
+
 ## Architecture Overview
 
 This application is structured as a serverless Node.js API deployed on AWS AppRunner. It uses:
@@ -60,12 +62,10 @@ The API provides the following endpoints:
 ## Deployment to AWS
 
 1. Configure AWS CLI with your credentials
-2. Deploy using AWS CDK:
-   ```
-   npm run cdk:synth  # Generate CloudFormation template
-   npm run deploy     # Deploy to AWS
-   ```
-3. It is essential to deploy the `configStack` first to produce the required parameters in SSM.
+2. Deploy the `configStack` to produce the required parameters in SSM
+3. Deploy the `commonResourcesStack` to produce the required S3 bucket and CloudFront distribution
+4. Comment out the `AppRunner` definition and deploy the `serverStack` to ensure the ECR repository is present
+5. Deploy the complete `serverStack`
 
 ### Local Development
 
@@ -89,6 +89,13 @@ The application is designed for scalability in the following ways:
 3. **Caching**: External API responses are cached in MongoDB with TTL.
 4. **MongoDB Atlas**: Can scale horizontally for database needs.
 5. **Rate Limiting**: Implemented to prevent abuse.
+
+## Limitations
+
+Areas that require addressing:
+
+1. This system utilizes MongoDB instead of DynamoDB due to budget constraints.
+2. Test cases are very limited and needs improvement.
 
 ## Future Improvements
 

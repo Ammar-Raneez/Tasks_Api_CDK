@@ -9,7 +9,7 @@ WORKDIR /app
 
 FROM base AS dependencies
 
-COPY package.json yarn.lock ./
+COPY package.json ./
 RUN yarn install --frozen-lockfile --ignore-scripts
 
 FROM dependencies AS build
