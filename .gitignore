@@ -2,3 +2,4 @@ node_modules
 src/common/environments/.env.*
 !src/common/environments/.env.example
 logs
+.DS_Store
