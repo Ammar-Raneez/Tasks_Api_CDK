@@ -3,7 +3,7 @@ import { ITaskDoc } from '../models';
 import { CreateTaskDto, UpdateTaskDto } from '../common/dtos/task';
 
 import { logger, ThrowError } from '../utils';
-import { taskDao } from '../dao';
+import { taskDao } from '../daos';
 
 export const createTask = async (taskData: CreateTaskDto): Promise<ITaskDoc> => {
   logger.info('taskService - createTask()');
