@@ -1,0 +1,20 @@
+{
+  "parameters": {
+    "serverPort": 3001,
+    "gitRepo": {
+      "name": "Tasks_Api_CDK",
+      "owner": "Ammar-Raneez",
+      "branch": "main",
+      "connectionArn": "/dev/ar-sample-repo-connection"
+    },
+    "application": {
+      "APP_PORT": "/dev/ar-sample-app-port",
+      "APP_VERSION": "/dev/ar-sample-app-version",
+      "CACHE_TTL": "/dev/ar-sample-app-cache-ttl",
+      "EXTERNAL_API": "/dev/ar-sample-api-url"
+    },
+    "database": {
+      "DB_URI": "/dev/ar-sample-db-uri"
+    }
+  }
+}

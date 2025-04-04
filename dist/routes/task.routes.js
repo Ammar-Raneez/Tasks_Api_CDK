@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const controllers_1 = require("../controllers");
+const dtos_1 = require("../common/dtos");
+const middlewares_1 = require("../common/middlewares");
+const router = (0, express_1.Router)();
+router.post('/', (0, middlewares_1.ValidateRequest)(dtos_1.createTaskDtoSchema), controllers_1.taskController.createTask);
+router.get('/', controllers_1.taskController.getAllTasks);
+router.get('/:id', controllers_1.taskController.getTaskById);
+router.put('/:id', (0, middlewares_1.ValidateRequest)(dtos_1.updateTaskDtoSchema), controllers_1.taskController.updateTask);
+router.delete('/:id', controllers_1.taskController.deleteTask);
+router.post('/upload-url', controllers_1.taskController.getFileUploadUrl);
+exports.default = router;

@@ -1,0 +1,5 @@
+node_modules
+yarn.lock
+src/common/environments/.env.*
+!src/common/environments/.env.example
+logs
